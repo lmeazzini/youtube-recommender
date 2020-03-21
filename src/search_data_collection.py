@@ -3,7 +3,7 @@ import requests
 import yaml
 
 
-with open('parameters.yaml') as f:
+with open('../parameters.yaml') as f:
     params = yaml.load(f, Loader=yaml.FullLoader)
 
 queries = params['queries']
