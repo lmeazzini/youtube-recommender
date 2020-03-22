@@ -84,18 +84,22 @@ X_train, X_val = (features.reset_index().loc[:n_train],
                   features.reset_index().loc[n_train+1:])
 y_train, y_val = y.reset_index().loc[:n_train], y.reset_index().loc[n_train+1:]
 
+# Dropping features that can not be used
 X_train = X_train.drop(['date', 'index'], axis=1)
 X_val = X_val.drop(['date', 'index'], axis=1)
 y_train = y_train['y']
 y_val = y_val['y']
 
+# Training a Decision Tree
 mdl = DecisionTreeClassifier(random_state=0, max_depth=3,
                              class_weight="balanced")
 mdl = mdl.fit(X_train, y_train)
 
+# Predicting on the validation set
 val_proba = mdl.predict_proba(X_val)
 preds = mdl.predict(X_val)
 
+# Getting the metrics
 print('log_loss: ', log_loss(y_val, preds))
 print('avg_precision_score: ', average_precision_score(y_val, val_proba[:, 1]))
 print('roc_auc: ', roc_auc_score(y_val, val_proba[:, 1]))
@@ -104,6 +108,7 @@ fig, ax = plt.subplots(1, 1, figsize=(10, 10))
 roc = skplt.metrics.plot_roc(y_val, val_proba, figsize=(8, 7), ax=ax)
 fig.savefig('../figures/dt_roc.png')
 
+# Drawing the tree
 fig, ax = plt.subplots(1, 1, figsize=(10, 10))
 plot_tree(mdl, ax=ax, feature_names=X_train.columns)
 fig.savefig('../figures/dt_fig.png')
