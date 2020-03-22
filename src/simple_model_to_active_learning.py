@@ -45,7 +45,7 @@ features = pd.DataFrame(index=df_clean.index)
 y = df['y'].copy()
 
 # Extracting time since publication feature
-features['time_since_pub'] = (pd.to_datetime("2020-03-14") -  # HARDCODED
+features['time_since_pub'] = (pd.to_datetime("2020-03-15") -  # HARDCODED
                               df_clean['date']) / np.timedelta64(1, 'D')
 
 # Extracting n of view feature
@@ -65,4 +65,44 @@ plt.ylabel('Video Count', fontsize=15)
 plt.savefig('../figures/video_dates.png')
 # plt.show()
 
-# roc.savefig('../figures/dt_roc.png')
+# Configuring to make a temporal train_val split
+features['date'] = df_clean['date']
+features['index'] = features.index
+features = features.set_index('date').sort_index().dropna()
+
+y = pd.DataFrame(y)
+y['date'] = df_clean['date']
+y['index'] = y.index
+y = y.set_index('date').sort_index()
+y = y[y.index.notna()]
+
+# Splitting the data set - 60% train 40% validation
+n = len(features)
+n_train = np.ceil(n * 0.6) - 1
+n_val = n - n_train
+
+X_train, X_val = features.reset_index().loc[:n_train], features.reset_index().loc[n_train+1:]
+y_train, y_val = y.reset_index().loc[:n_train], y.reset_index().loc[n_train+1:]
+
+X_train = X_train.drop(['date', 'index'], axis=1)
+X_val = X_val.drop(['date', 'index'], axis=1)
+y_train = y_train['y']
+y_val = y_val['y']
+
+mdl = DecisionTreeClassifier(random_state=0, max_depth=3, class_weight="balanced")
+mdl = mdl.fit(X_train, y_train)
+
+val_proba = mdl.predict_proba(X_val)
+preds = mdl.predict(X_val)
+
+print('log_loss: ', log_loss(y_val, preds))
+print('avg_precision_score: ', average_precision_score(y_val, val_proba[:, 1]))
+print('roc_auc: ', roc_auc_score(y_val, val_proba[:, 1]))
+
+fig, ax = plt.subplots(1, 1, figsize=(10, 10))
+roc = skplt.metrics.plot_roc(y_val, val_proba, figsize=(8, 7), ax=ax)
+fig.savefig('../figures/dt_roc.png')
+
+fig, ax = plt.subplots(1, 1, figsize=(10, 10))
+plot_tree(mdl, ax=ax, feature_names=X_train.columns)
+fig.savefig('../figures/dt_fig.png')
