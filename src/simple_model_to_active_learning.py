@@ -36,9 +36,8 @@ clean_date = clean_date.dropna().apply(lambda x: " ".join(x), axis=1)
 df_clean['date'] = pd.to_datetime(clean_date, format="%d %b %Y")
 
 # Clean view number
-views = df['watch-view-count'].str.extract(r"(\d+\.?\d*)",
-           expand=False).str.replace(".", "").fillna(0).astype(int)
-df_clean['views'] = views
+views = df['watch-view-count'].str.extract(r"(\d+\.?\d*)", expand=False)
+df_clean['views'] = views.str.replace(".", "").fillna(0).astype(int)
 
 # Makaing features DataFrame
 features = pd.DataFrame(index=df_clean.index)
@@ -81,7 +80,8 @@ n = len(features)
 n_train = np.ceil(n * 0.6) - 1
 n_val = n - n_train
 
-X_train, X_val = features.reset_index().loc[:n_train], features.reset_index().loc[n_train+1:]
+X_train, X_val = (features.reset_index().loc[:n_train],
+                  features.reset_index().loc[n_train+1:])
 y_train, y_val = y.reset_index().loc[:n_train], y.reset_index().loc[n_train+1:]
 
 X_train = X_train.drop(['date', 'index'], axis=1)
@@ -89,7 +89,8 @@ X_val = X_val.drop(['date', 'index'], axis=1)
 y_train = y_train['y']
 y_val = y_val['y']
 
-mdl = DecisionTreeClassifier(random_state=0, max_depth=3, class_weight="balanced")
+mdl = DecisionTreeClassifier(random_state=0, max_depth=3,
+                             class_weight="balanced")
 mdl = mdl.fit(X_train, y_train)
 
 val_proba = mdl.predict_proba(X_val)
