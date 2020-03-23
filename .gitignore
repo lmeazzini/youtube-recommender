@@ -3,3 +3,4 @@ pages/*
 .vscode/*
 data/*
 figures/*
+notebooks/.ipynb_checkpoints/*.ipynb
