@@ -16,7 +16,7 @@ for query in queries:
         url = urls.format(query=query, page=page)
         response = requests.get(url)
 
-        with open('pages/{}_{}.html'.format(query, page), 'w+') as output:
+        with open('../pages/{}_{}.html'.format(query, page), 'w+') as output:
             output.write(response.text)
 
         time.sleep(1)

@@ -7,7 +7,7 @@ import re
 import json
 
 
-df = pd.read_json('data/parsed_videos.json', lines=True)
+df = pd.read_json('../data/parsed_videos.json', lines=True)
 url = 'https://www.youtube.com{link}'
 
 links = df['link'].unique()
@@ -19,14 +19,14 @@ for link in links:
     response = requests.get(page_url)
     link_name = re.search('v=(.*)', link).group(1)
 
-    with open('pages/video_{}.html'.format(link_name), 'w+') as output:
+    with open('../pages/video_{}.html'.format(link_name), 'w+') as output:
         output.write(response.text)
 
     time.sleep(1)
 
 # Processing video data
-with open('data/parsed_video_data.json', 'w+') as output:
-    video_paths = glob.glob('pages/video*')
+with open('../data/parsed_video_data.json', 'w+') as output:
+    video_paths = glob.glob('../pages/video*')
     for video_file in sorted(video_paths):
         with open(video_file, 'r+') as inp:
             html_page = inp.read()
@@ -61,7 +61,7 @@ with open('data/parsed_video_data.json', 'w+') as output:
 
             output.write('{}\n'.format(json.dumps(data)))
 
-df = pd.read_json('data/parsed_video_data.json', lines=True)
+df = pd.read_json('../data/parsed_video_data.json', lines=True)
 
 # Selecting just some columns
 selected_cols = ['watch-title', 'watch-view-count', 'watch-time-text',
@@ -72,5 +72,5 @@ selected_cols = ['watch-title', 'watch-view-count', 'watch-time-text',
 
 # 'watch7-headline', 'watch7-user-header', 'watch8-sentiment-actions'
 
-df[selected_cols].to_feather('data/raw_data.feather')
-df[selected_cols].to_csv('data/raw_data.csv', index=False)
+df[selected_cols].to_feather('../data/raw_data.feather')
+df[selected_cols].to_csv('../data/raw_data.csv', index=False)
