@@ -39,12 +39,12 @@ df_clean['date'] = pd.to_datetime(clean_date, format="%d %b %Y")
 views = df['watch-view-count'].str.extract(r"(\d+\.?\d*)", expand=False)
 df_clean['views'] = views.str.replace(".", "").fillna(0).astype(int)
 
-# Makaing features DataFrame
+# Making features DataFrame
 features = pd.DataFrame(index=df_clean.index)
 y = df['y'].copy()
 
 # Extracting time since publication feature
-features['time_since_pub'] = (pd.to_datetime("2020-03-15") -  # HARDCODED
+features['time_since_pub'] = (pd.to_datetime("2020-03-24") -  # HARDCODED
                               df_clean['date']) / np.timedelta64(1, 'D')
 
 # Extracting n of view feature
