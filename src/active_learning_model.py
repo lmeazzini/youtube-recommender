@@ -163,4 +163,5 @@ n_random = 100 - n_hard
 random_ones = df_u[~mask_u].sample(n_random, random_state=42)
 
 active_learning = pd.concat([hard_ones, random_ones])
-active_learning.to_csv("../data/active_label.csv", index=False)
+
+active_learning.to_csv("../data/active_label.csv")
