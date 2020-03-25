@@ -4,3 +4,4 @@ pages/*
 data/*
 figures/*
 notebooks/.ipynb_checkpoints/*.ipynb
+pkls/*.z
