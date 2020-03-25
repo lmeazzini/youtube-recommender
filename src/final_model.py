@@ -9,6 +9,39 @@ from sklearn.metrics import roc_auc_score, average_precision_score
 from skopt import forest_minimize
 
 
+def tune_lgbm(params):
+    lr = params[0]
+    max_depth = params[1]
+    min_child_samples = params[2]
+    subsample = params[3]
+    colsample_bytree = params[4]
+    n_estimators = params[5]
+
+    min_df = params[6]
+    ngram_range = (1, params[7])
+
+    title_vec = TfidfVectorizer(min_df=min_df, ngram_range=ngram_range)
+    title_bow_train = title_vec.fit_transform(train_titles)
+    title_bow_val = title_vec.transform(val_titles)
+
+    X_train_title = hstack([X_train, title_bow_train])
+    X_val_title = hstack([X_val, title_bow_val])
+
+    mdl = LGBMClassifier(learning_rate=lr, num_leaves=2 ** max_depth,
+                         max_depth=max_depth,
+                         min_child_samples=min_child_samples,
+                         subsample=subsample,
+                         colsample_bytree=colsample_bytree,
+                         bagging_freq=1, n_estimators=n_estimators,
+                         random_state=42, class_weight="balanced", n_jobs=8)
+    mdl.fit(X_train_title, y_train)
+
+    p = mdl.predict_proba(X_val_title)[:, 1]
+
+    print(roc_auc_score(y_val, p))
+
+    return -average_precision_score(y_val, p)
+
 df = pd.read_csv('../data/raw_data_labeled.csv')
 df = df[df['y'].notnull()]
 
@@ -81,41 +114,6 @@ y_train, y_val = y[mask_train.values], y[mask_val.values]
 # Filling NaNs
 X_train['resolution'] = X_train['resolution'].fillna(X_train['resolution'].mean())
 X_val['resolution'] = X_val['resolution'].fillna(X_train['resolution'].mean())
-
-
-def tune_lgbm(params):
-    lr = params[0]
-    max_depth = params[1]
-    min_child_samples = params[2]
-    subsample = params[3]
-    colsample_bytree = params[4]
-    n_estimators = params[5]
-
-    min_df = params[6]
-    ngram_range = (1, params[7])
-
-    title_vec = TfidfVectorizer(min_df=min_df, ngram_range=ngram_range)
-    title_bow_train = title_vec.fit_transform(train_titles)
-    title_bow_val = title_vec.transform(val_titles)
-
-    X_train_title = hstack([X_train, title_bow_train])
-    X_val_title = hstack([X_val, title_bow_val])
-
-    mdl = LGBMClassifier(learning_rate=lr, num_leaves=2 ** max_depth,
-                         max_depth=max_depth,
-                         min_child_samples=min_child_samples,
-                         subsample=subsample,
-                         colsample_bytree=colsample_bytree,
-                         bagging_freq=1, n_estimators=n_estimators,
-                         random_state=42, class_weight="balanced", n_jobs=8)
-    mdl.fit(X_train_title, y_train)
-
-    p = mdl.predict_proba(X_val_title)[:, 1]
-
-    print(roc_auc_score(y_val, p))
-
-    return -average_precision_score(y_val, p)
-
 
 space = [(1e-3, 1e-1, 'log-uniform'),  # lr
          (1, 10),  # max_depth
