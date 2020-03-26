@@ -4,4 +4,5 @@ pages/*
 data/*
 figures/*
 notebooks/.ipynb_checkpoints/*.ipynb
-pkls/*.z
+src/deploy/pkls/*.z
+src/deploy/new_videos.json
