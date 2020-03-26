@@ -42,7 +42,8 @@ def tune_lgbm(params):
 
     return -average_precision_score(y_val, p)
 
-df = pd.read_csv('../data/raw_data_labeled.csv')
+
+df = pd.read_csv('../../data/raw_data_labeled.csv')
 df = df[df['y'].notnull()]
 
 # Clean date attribute
@@ -185,10 +186,11 @@ print('roc_auc: ', roc_auc_score(y_val, rf_val_proba[:, 1]))
 
 p = 0.26*rf_val_proba[:, 1] + 0.74*lgbm_val_proba[:, 1]
 
-print('Ensamble Model:')
+print('\nEnsamble Model:')
 print('avg_precision_score: ', average_precision_score(y_val, p))
 print('roc_auc: ', roc_auc_score(y_val, p))
 
-jb.dump(lgbm, "../pkls/lgbm_20200324.pkl.z")
-jb.dump(rfc, "../pkls/rf_20200324.pkl.z")
-jb.dump(title_vec, "../pkls/titlebow_20200324.pkl.z")
+# Saving model pkls
+jb.dump(lgbm, "../deploy/pkls/lgbm_20200324.pkl.z")
+jb.dump(rfc, "../deploy/pkls/rf_20200324.pkl.z")
+jb.dump(title_vec, "../deploy/pkls/titlebow_20200324.pkl.z")
