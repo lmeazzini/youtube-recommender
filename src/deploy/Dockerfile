@@ -21,10 +21,7 @@ RUN python db_starter.py
 # Run the app.  CMD is required to run on Heroku
 # $PORT is set by Heroku			
 CMD gunicorn --bind 0.0.0.0:$PORT -t 300 wsgi 
-# CMD gunicorn --bind 0.0.0.0:8000 -t 300 wsgi 
 
-
-#https://github.com/microsoft/LightGBM/blob/master/docker/dockerfile-python
 #https://github.com/heroku/alpinehelloworld
 #https://devcenter.heroku.com/articles/container-registry-and-runtime
 
