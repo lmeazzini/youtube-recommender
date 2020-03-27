@@ -6,7 +6,7 @@ import re
 def download_search_page(query, page):
     url = "https://www.youtube.com/results?search_query={query}&sp=CAI%253D&p={page}"
     urll = url.format(query=query, page=page)
-    response = rq.get(urll)
+    response = response = rq.get(urll, headers={"Accept-Language": "pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3"})
 
     return response.text
 
@@ -14,7 +14,7 @@ def download_search_page(query, page):
 def download_video_page(link):
     url = "https://www.youtube.com{link}"
     urll = url.format(link=link)
-    response = rq.get(urll)
+    response = rq.get(urll, headers={"Accept-Language": "pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3"})
 
     return response.text
 
