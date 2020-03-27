@@ -3,14 +3,16 @@ from get_data import (download_search_page, parse_search_page,
 from ml_utils import compute_prediction
 import time
 import json
+import sqlite3 as sql
 
-queries = ["crise+bolsa", "fundos+imobiliarios", "investimento-bolsa"]
+queries = ["crise+bolsa", "fundos+imobiliarios",
+           "investimento-bolsa", "ITSA-crise"]
+db_name = 'videos.db'
 
 
 def update_db():
-    with open("new_videos.json", 'w+') as output:
+    with sql.connect(db_name) as conn:
         for query in queries:
-
             for page in range(1, 4):
                 print(query, page)
                 search_page = download_search_page(query, page)
@@ -26,10 +28,15 @@ def update_db():
                     p = compute_prediction(video_json_data)
 
                     video_id = video_json_data.get('og:video:url', '')
-                    data_front = {"title": video_json_data['watch-title'],
-                                  "score": float(p), "video_id": video_id}
+                    watch_title = video_json_data['watch-title'].replace("'",
+                                                                         "")
+                    data_front = {"title": watch_title,
+                                  "score": float(p),
+                                  "video_id": video_id}
                     data_front['update_time'] = time.time_ns()
 
                     print(video_id, json.dumps(data_front))
-                    output.write("{}\n".format(json.dumps(data_front)))
+                    c = conn.cursor()
+                    c.execute("INSERT INTO videos VALUES ('{title}', '{video_id}', {score}, {update_time})".format(**data_front))
+                    conn.commit()
     return True
