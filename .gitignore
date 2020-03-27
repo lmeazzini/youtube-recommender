@@ -7,3 +7,4 @@ notebooks/.ipynb_checkpoints/*.ipynb
 src/deploy/pkls/*.z
 src/deploy/new_videos.json
 src/deploy/__pycache__/*.pyc
+src/deploy/videos.db
