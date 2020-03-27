@@ -1,11 +1,14 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
+from flask_bootstrap import Bootstrap
 import run_backend as run_backend
 import get_data
 import ml_utils
 import sqlite3 as sql
 import json
+import bs4 as bs
 
 app = Flask(__name__)
+bootstrap = Bootstrap(app)
 
 
 def get_predictions():
@@ -26,24 +29,40 @@ def get_predictions():
         predictions.append((video['video_id'], video['title'],
                             float(video['score'])))
 
-    predictions = sorted(predictions, key=lambda x: x[2], reverse=True)[:25]
-
-    predictions_formatted = []
-    for e in predictions:
-        predictions_formatted.append("<tr><th><a href=\"{link}\">{title}</a></th><th>{score}</th></tr>".format(title=e[1], link=e[0], score=e[2]))
-
-    return '\n'.join(predictions_formatted)
+    return sorted(predictions,
+                  key=lambda x: x[2],
+                  reverse=False)[:30]
 
 
 @app.route('/')
 def main_page():
     preds = get_predictions()
-    return """<head><h1>Recomendador de Vídeos do Youtube</h1></head>
-    <body>
-    <table>
-             {}
-    </table>
-    </body>""".format(preds)
+
+    for pred in preds:
+
+        with open('templates/index.html') as page_html:
+
+            soup = bs.BeautifulSoup(page_html, features='html.parser')
+            link, title, score = pred
+
+            if len(soup.tbody) > 59:
+                break
+
+            new_tr = soup.new_tag("tr", **{'class': "row100 body"})
+            soup.tbody.insert(0, new_tr)
+            new_td1 = soup.new_tag("td", **{'class': "cell100 column1"})
+            new_td2 = soup.new_tag("td", **{'class': "cell100 column2"})
+            soup.tbody.tr.insert(0, new_td1)
+            soup.tbody.tr.insert(1, new_td2)
+            new_td2.string = str(score)
+            new_link = soup.new_tag("a", href=link)
+            soup.td.append(new_link)
+            new_link.string = title
+
+        with open("templates/index.html", "w") as outf:
+            outf.write(soup.prettify())
+
+    return render_template("index.html")
 
 
 @app.route('/predict')
