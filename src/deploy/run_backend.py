@@ -6,7 +6,7 @@ import json
 import sqlite3 as sql
 
 queries = ["crise+bolsa", "fundos+imobiliarios",
-           "investimento-bolsa", "ITSA-crise"]
+           "investimento+bolsa", "ibovespa", "ITSA4"]
 db_name = 'videos.db'
 
 

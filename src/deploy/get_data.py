@@ -1,12 +1,12 @@
 import requests as rq
-import bs4 as bs4
+import bs4 as bs
 import re
 
 
 def download_search_page(query, page):
     url = "https://www.youtube.com/results?search_query={query}&sp=CAI%253D&p={page}"
     urll = url.format(query=query, page=page)
-    response = response = rq.get(urll, headers={"Accept-Language": "pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3"})
+    response = rq.get(urll, headers={"Accept-Language": "pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3"})
 
     return response.text
 
@@ -20,7 +20,7 @@ def download_video_page(link):
 
 
 def parse_search_page(page_html):
-    parsed = bs4.BeautifulSoup(page_html, features='html.parser')
+    parsed = bs.BeautifulSoup(page_html, features='html.parser')
 
     tags = parsed.findAll("a")
 
@@ -36,7 +36,7 @@ def parse_search_page(page_html):
 
 
 def parse_video_page(page_html):
-    parsed = bs4.BeautifulSoup(page_html, 'html.parser')
+    parsed = bs.BeautifulSoup(page_html, 'html.parser')
 
     class_watch = parsed.find_all(attrs={"class": re.compile(r"watch")})
     id_watch = parsed.find_all(attrs={"id": re.compile(r"watch")})
