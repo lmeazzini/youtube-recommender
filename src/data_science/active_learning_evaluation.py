@@ -7,10 +7,10 @@ from sklearn.metrics import roc_auc_score, average_precision_score, log_loss
 
 
 # Reading data
-df1 = pd.read_csv("../data/raw_data.csv")
+df1 = pd.read_csv("../../data/raw_data.csv")
 df1 = df1[df1['y'].notnull()]
 
-df2 = pd.read_csv("../data/active_label_done.csv", index_col=0)
+df2 = pd.read_csv("../../data/active_label_done.csv", index_col=0)
 df2 = df2[df2['y'].notnull()]
 df2['new_data'] = 1
 

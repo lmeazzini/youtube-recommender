@@ -6,7 +6,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from scipy.sparse import hstack
 
 
-raw_data = pd.read_csv('../data/raw_data.csv')
+raw_data = pd.read_csv('../../data/raw_data.csv')
 df = raw_data[raw_data['y'].notnull()]
 
 df_clean = pd.DataFrame(index=df.index)

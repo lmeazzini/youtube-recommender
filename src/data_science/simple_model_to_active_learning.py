@@ -7,7 +7,7 @@ import scikitplot as skplt
 from sklearn.tree import plot_tree
 
 
-df = pd.read_csv('../data/raw_data.csv')
+df = pd.read_csv('../../data/raw_data.csv')
 df = df[df['y'].notnull()]
 
 df_clean = pd.DataFrame(index=df.index)
@@ -106,9 +106,9 @@ print('roc_auc: ', roc_auc_score(y_val, val_proba[:, 1]))
 
 fig, ax = plt.subplots(1, 1, figsize=(10, 10))
 roc = skplt.metrics.plot_roc(y_val, val_proba, figsize=(8, 7), ax=ax)
-fig.savefig('../figures/dt_roc.png')
+fig.savefig('../../figures/dt_roc.png')
 
 # Drawing the tree
 fig, ax = plt.subplots(1, 1, figsize=(10, 10))
 plot_tree(mdl, ax=ax, feature_names=X_train.columns)
-fig.savefig('../figures/dt_fig.png')
+fig.savefig('../../figures/dt_fig.png')
