@@ -7,6 +7,8 @@ from sklearn.ensemble import RandomForestClassifier
 import joblib as jb
 from sklearn.metrics import roc_auc_score, average_precision_score
 from skopt import forest_minimize
+import matplotlib.pyplot as plt
+import scikitplot as skplt
 
 
 def tune_lgbm(params):
@@ -75,7 +77,7 @@ views = views.str.replace(".", "").fillna(0).astype(int)
 features = pd.DataFrame()
 y = df['y'].copy()
 
-features['time_since_pub'] = (pd.to_datetime("2020-03-24") -  # HARDCODED
+features['time_since_pub'] = (pd.to_datetime("2020-03-29") -  # HARDCODED
                               clean_date) / np.timedelta64(1, 'D')
 
 # Extracting n of view feature
@@ -129,7 +131,7 @@ train_titles = df[mask_train]['watch-title']
 val_titles = df[mask_val]['watch-title']
 
 res = forest_minimize(tune_lgbm, space, random_state=42,
-                      n_random_starts=20, n_calls=50, verbose=1)
+                      n_random_starts=50, n_calls=75, verbose=1)
 
 lr, max_depth, min_child_samples, subsample, colsample_bytree, n_estimators, min_df, ngram_range = res.x
 
@@ -184,13 +186,22 @@ print('avg_precision_score: ', average_precision_score(y_val,
                                                        rf_val_proba[:, 1]))
 print('roc_auc: ', roc_auc_score(y_val, rf_val_proba[:, 1]))
 
-p = 0.26*rf_val_proba[:, 1] + 0.74*lgbm_val_proba[:, 1]
+ensamble_proba = 0.57*rf_val_proba + 0.43*lgbm_val_proba
 
 print('\nEnsamble Model:')
-print('avg_precision_score: ', average_precision_score(y_val, p))
-print('roc_auc: ', roc_auc_score(y_val, p))
+print('avg_precision_score: ', average_precision_score(y_val,
+                                                       ensamble_proba[:, 1]))
+print('roc_auc: ', roc_auc_score(y_val, ensamble_proba[:, 1]))
 
 # Saving model pkls
 jb.dump(lgbm, "../deploy/pkls/lgbm_20200324.pkl.z")
 jb.dump(rfc, "../deploy/pkls/rf_20200324.pkl.z")
 jb.dump(title_vec, "../deploy/pkls/titlebow_20200324.pkl.z")
+
+fig, ax = plt.subplots(1, 1)
+roc = skplt.metrics.plot_roc(y_val, ensamble_proba, figsize=(8, 7), ax=ax)
+fig.savefig('../../figures/ensamble_roc.png')
+
+fig, ax = plt.subplots(1, 1)
+roc = skplt.estimators.plot_learning_curve(lgbm, features, y, ax=ax, cv=5)
+fig.savefig('../../figures/LCA_lgbm.png')
