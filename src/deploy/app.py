@@ -31,27 +31,27 @@ def get_predictions():
 
     return sorted(predictions,
                   key=lambda x: x[2],
-                  reverse=False)[:30]
+                  reverse=True)[:50]
 
 
 @app.route('/')
 def main_page():
-    preds = get_predictions()
+    preds = get_predictions()[::-1]
 
-    for pred in preds:
-
-        with open('templates/index.html') as page_html:
-
+    for i, pred in enumerate(preds):
+        with open('templates/main.html') as page_html:
+            i = 49 - i
             soup = bs.BeautifulSoup(page_html, features='html.parser')
             link, title, score = pred
 
-            if len(soup.tbody) > 59:
+            if len(soup.tbody) > 99:
                 break
 
-            new_tr = soup.new_tag("tr", **{'class': "row100 body"})
+            new_tr = soup.new_tag("tr")
             soup.tbody.insert(0, new_tr)
-            new_td1 = soup.new_tag("td", **{'class': "cell100 column1"})
-            new_td2 = soup.new_tag("td", **{'class': "cell100 column2"})
+
+            new_td1 = soup.new_tag("td")
+            new_td2 = soup.new_tag("td")
             soup.tbody.tr.insert(0, new_td1)
             soup.tbody.tr.insert(1, new_td2)
             new_td2.string = str(score)
@@ -59,10 +59,14 @@ def main_page():
             soup.td.append(new_link)
             new_link.string = title
 
-        with open("templates/index.html", "w") as outf:
+            new_th = soup.new_tag("th", scope="row")
+            soup.tbody.tr.insert(0, new_th)
+            new_th.string = str(i+1)
+
+        with open("templates/main.html", "w") as outf:
             outf.write(soup.prettify())
 
-    return render_template("index.html")
+    return render_template("main.html")
 
 
 @app.route('/predict')
