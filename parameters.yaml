@@ -1,3 +1,5 @@
-queries: ['crise-bolsa', 'dolar-alto', 'fundos-imobiliarios', 'defesa-crise']
+queries: ['folk+rock', 'classical+guitar',
+          'acustic+rock', 'orchestral+rock',
+          'cello+songs', 'brazilian+rock']
 urls: "https://www.youtube.com/results?search_query={query}&sp=CAI%253D&p={page}"
 number_of_pages: 100
