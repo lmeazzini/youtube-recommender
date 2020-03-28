@@ -5,8 +5,9 @@ import time
 import json
 import sqlite3 as sql
 
-queries = ["crise+bolsa", "fundos+imobiliarios",
-           "investimento+bolsa", "ibovespa", "ITSA4"]
+queries = ['rock+n+roll', 'classical+guitar',
+           'acustic+rock', 'ana-vidovic',
+           'cello+songs', 'brazilian+music']
 db_name = 'videos.db'
 
 
