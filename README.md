@@ -1,6 +1,6 @@
-# Youtube video recommender
+# Youtube music recommender
 
-This is a simple youtube video recommender. The solution can be seen on Heroku at:
+This is a simple youtube music/video recommender. You can checkout the deployed solution on Heroku:
 
 https://thawing-shore-99052.herokuapp.com/
 
@@ -57,7 +57,7 @@ Then run the app with:
 python app.py
 ```
 
-#### Make a Docker image to run
+#### Make a local Docker image to run
 
 Build the docker image:
 
