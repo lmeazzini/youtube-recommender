@@ -186,7 +186,7 @@ print('avg_precision_score: ', average_precision_score(y_val,
                                                        rf_val_proba[:, 1]))
 print('roc_auc: ', roc_auc_score(y_val, rf_val_proba[:, 1]))
 
-ensamble_proba = 0.57*rf_val_proba + 0.43*lgbm_val_proba
+ensamble_proba = 0.21*rf_val_proba + 0.79*lgbm_val_proba
 
 print('\nEnsamble Model:')
 print('avg_precision_score: ', average_precision_score(y_val,

@@ -107,7 +107,7 @@ def compute_prediction(data):
     p_rf = mdl_rf.predict_proba(feature_array)[0][1]
     p_lgbm = mdl_lgbm.predict_proba(feature_array)[0][1]
 
-    p = 0.26*p_rf + 0.74*p_lgbm
+    p = 0.21*p_rf + 0.79*p_lgbm
 
     return p
 

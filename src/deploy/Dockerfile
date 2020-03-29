@@ -12,13 +12,11 @@ RUN apt-get update && \
         g++ 
 RUN pip install -r requirements.txt
 RUN python db_starter.py
-#CMD python ./app.py
 
 # Run the app.  CMD is required to run on Heroku
 # $PORT is set by Heroku			
 CMD gunicorn --bind 0.0.0.0:$PORT -t 300 wsgi 
 
-#https://github.com/heroku/alpinehelloworld
 #https://devcenter.heroku.com/articles/container-registry-and-runtime
 
 # Creating app... done, ⬢ thawing-shore-99052
