@@ -107,7 +107,7 @@ for height, width in zip(df['og:video:height'], df['og:video:width']):
 features['resolution'] = resolutions
 
 # Around 75% train and 25% to validation
-split_date = '2020-02-27'
+split_date = '2019-09-01'
 mask_train = (clean_date < split_date) & (clean_date.notnull())
 mask_val = (clean_date >= split_date) & (clean_date.notnull())
 
