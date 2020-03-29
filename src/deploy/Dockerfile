@@ -1,5 +1,5 @@
 # docker build . -t deploy_ytr
-# docker run -e PORT=8000 -p 80:80 deploy_ytr
+# docker run -e PORT=8000 deploy_ytr
 FROM python:3.7-slim
 COPY . /app
 WORKDIR /app

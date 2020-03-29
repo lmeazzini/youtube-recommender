@@ -131,7 +131,7 @@ train_titles = df[mask_train]['watch-title']
 val_titles = df[mask_val]['watch-title']
 
 res = forest_minimize(tune_lgbm, space, random_state=42,
-                      n_random_starts=50, n_calls=75, verbose=1)
+                      n_random_starts=100, n_calls=150, verbose=1)
 
 lr, max_depth, min_child_samples, subsample, colsample_bytree, n_estimators, min_df, ngram_range = res.x
 
